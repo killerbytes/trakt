@@ -30,19 +30,19 @@ export default class Http {
     });
 
     this.axiosInstance.interceptors.response.use(
-      function(config) {
+      function (config) {
         return config;
       },
       (error) => {
-        console.log(error);
+        console.log(error.message);
         if (error.message === 'Network Error') {
           // window.location = '/504';
+          window.location = '/login'
         }
 
         const {
           response: { status = null },
         } = error;
-        console.log(status);
         switch (status) {
           case 401:
             sessionStorage.setItem('REDIRECT', window.location.pathname);
@@ -58,7 +58,7 @@ export default class Http {
   }
 
   getToken = () => {
-    const { access_token } = JSON.parse(localStorage.getItem(`${APP_NAME}`));
+    const { access_token } = JSON.parse(localStorage.getItem(`${APP_NAME}`)) || {};
     return access_token;
   };
 
@@ -70,13 +70,16 @@ export default class Http {
   };
 
   get = (url, payload = {}) => {
-    const config = Object.assign({}, headers({ Authorization: `Bearer ${this.getToken()}` }));
-    console.log(config);
+    const config = Object.assign(payload, headers({ Authorization: `Bearer ${this.getToken()}` }));
     return new Promise((resolve, reject) => {
       this.axiosInstance
         .get(url, config)
         .then((res) => resolve(responseParser(res)))
-        .catch((err) => reject(errorParser(err)));
+        .catch((err) => {
+          console.log(err)
+          reject(errorParser(err))
+
+        });
     });
   };
   post = (url, payload) => {
