@@ -16,7 +16,18 @@ const headers = (params) => {
   };
 };
 
-const responseParser = (res) => res.data;
+const responseParser = (res) => {
+  const headers = res.headers;
+  return {
+    ...res,
+    pagination: {
+      itemCount: headers['x-pagination-item-count'],
+      limit: headers['x-pagination-limit'],
+      page: headers['x-pagination-page'],
+      pageCount: headers['x-pagination-page-count'],
+    },
+  };
+};
 const errorParser = (res) => {
   console.error(res);
   return res.response;
@@ -30,14 +41,14 @@ export default class Http {
     });
 
     this.axiosInstance.interceptors.response.use(
-      function (config) {
+      function(config) {
         return config;
       },
       (error) => {
         console.log(error.message);
         if (error.message === 'Network Error') {
           // window.location = '/504';
-          window.location = '/login'
+          window.location = '/login';
         }
 
         const {
@@ -76,9 +87,8 @@ export default class Http {
         .get(url, config)
         .then((res) => resolve(responseParser(res)))
         .catch((err) => {
-          console.log(err)
-          reject(errorParser(err))
-
+          console.log(err);
+          reject(errorParser(err));
         });
     });
   };
