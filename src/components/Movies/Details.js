@@ -1,6 +1,5 @@
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
-import { toJS } from 'mobx';
 import Cast from './Cast';
 import React from 'react';
 import styled from 'styled-components';
@@ -17,9 +16,8 @@ const MovieDetails = ({ match, movieStore, tmdbStore }) => {
   }, [movieStore, slug]);
 
   React.useEffect(() => {
-    const details = movieStore.summary;
     if (detail.ids) {
-      tmdbStore.getDetails(details.ids.tmdb).then((res) => {
+      tmdbStore.getDetails(detail.ids.tmdb).then((res) => {
         setPoster((prevState) => ({
           ...prevState,
           poster: `https://image.tmdb.org/t/p/w500${res.poster_path}`,

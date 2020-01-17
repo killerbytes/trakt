@@ -1,11 +1,10 @@
 import { inject } from 'mobx-react';
 import { Link, withRouter } from 'react-router-dom';
-import { toJS } from 'mobx';
 import React from 'react';
 import styled from 'styled-components';
 
 const Card = ({ match, item, tmdbStore }) => {
-  const { type, category } = match.params;
+  const { type } = match.params;
   const key = type === 'movies' ? 'movie' : 'show';
   const data = item[key] ? item[key] : item;
 
@@ -17,7 +16,7 @@ const Card = ({ match, item, tmdbStore }) => {
         setPoster(`https://image.tmdb.org/t/p/w780${res.backdrop_path}`);
       });
     }
-  }, [data.ids, tmdbStore]);
+  }, [data.ids, key, tmdbStore]);
   return (
     <CardStyled>
       <Link to={`/movies/details/${data.ids.slug}`}>

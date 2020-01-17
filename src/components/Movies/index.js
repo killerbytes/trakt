@@ -2,7 +2,6 @@ import { inject } from 'mobx-react';
 import { NavLink } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { PATH } from 'definitions';
-import { useInView } from 'react-intersection-observer';
 import Card from './Card';
 import React from 'react';
 import styled from 'styled-components';
@@ -11,11 +10,6 @@ const Movies = ({ match, movieStore, showStore }) => {
   const { type, category } = match.params;
   const store = type === 'movies' ? movieStore : showStore;
   const [page, setPage] = React.useState(1);
-
-  const [ref, inView, entry] = useInView({
-    /* Optional options */
-    threshold: 0,
-  });
 
   React.useEffect(() => {
     switch (category) {
@@ -26,7 +20,7 @@ const Movies = ({ match, movieStore, showStore }) => {
       default:
         store.list(category, null, store.page);
     }
-  }, [category, type]);
+  }, [category, store, type]);
 
   // React.useEffect(() => {
   //   if (inView) {

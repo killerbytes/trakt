@@ -1,4 +1,4 @@
-import { decorate, observable } from 'mobx';
+import { decorate } from 'mobx';
 import BaseStore from './base';
 
 class ShowStore extends BaseStore {
