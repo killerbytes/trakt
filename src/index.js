@@ -1,5 +1,7 @@
 import './sass/main.scss';
+import '@fortawesome/fontawesome-free/css/all.css';
 import { Provider } from 'mobx-react';
+import { ThemeProvider } from 'styled-components';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -7,9 +9,14 @@ import * as serviceWorker from './serviceWorker';
 import App from './App';
 import stores from 'stores';
 
+/* eslint import/no-webpack-loader-syntax: off */
+const theme = require('sass-extract-loader?{"plugins":["sass-extract-js"]}!./sass/vars.scss');
+
 ReactDOM.render(
   <Provider {...stores}>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </Provider>,
   document.getElementById('root')
 );

@@ -1,1 +1,25 @@
 @import '~bootstrap/scss/bootstrap';
+@import 'vars.scss';
+@import 'components/movie.scss';
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background-color: $background-color;
+  font-size: 14px;
+}
+
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  @media (min-width: 768px) {
+    width: 740px;
+  }
+  @media (min-width: 992px) {
+    width: 960px;
+  }
+  @media (min-width: 1200px) {
+    width: 1160px;
+  }
+}
