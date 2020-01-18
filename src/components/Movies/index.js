@@ -1,16 +1,19 @@
 import { inject } from 'mobx-react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { PATH } from 'definitions';
+import { toJS } from 'mobx';
 import Card from './Card';
+import qs from 'query-string';
 import React from 'react';
 import styled from 'styled-components';
 
-const Movies = ({ match, movieStore, showStore }) => {
+const Movies = (props) => {
+  const { match, movieStore, showStore, history } = props;
   const { type, category } = match.params;
   const store = type === 'movies' ? movieStore : showStore;
-  const [page, setPage] = React.useState(1);
-
+  const { page = 1 } = qs.parse(props.location.search);
+  const pagination = movieStore.pagination;
   React.useEffect(() => {
     switch (category) {
       case 'collected':
@@ -18,18 +21,13 @@ const Movies = ({ match, movieStore, showStore }) => {
         store.list(category, 'weekly');
         break;
       default:
-        store.list(category, null, store.page);
+        store.list(category, null, page);
     }
-  }, [category, store, type]);
+  }, [category, store, page, type]);
 
-  // React.useEffect(() => {
-  //   if (inView) {
-  //     movieStore.page = movieStore.page + 1;
-  //   }
-  // }, [inView]);
   return (
-    <div className="d-flex h-100">
-      <AsideStyled>
+    <div className="d-flex h-100 movie-list">
+      <aside>
         Movies
         <ul>
           <li>
@@ -51,14 +49,33 @@ const Movies = ({ match, movieStore, showStore }) => {
             <NavLink to={`/${PATH.movies}/boxoffice`}>Box Office</NavLink>
           </li>
         </ul>
-      </AsideStyled>
-      <MainStyled className="main">
-        <GridStyled className="d-grid">
-          {store.LIST && store.LIST.map((i, key) => <Card item={i} key={key} />)}
-        </GridStyled>
-        <button onClick={() => setPage((prevState) => prevState + 1)}>Next</button>
-        <h1>{page}</h1>
-      </MainStyled>
+      </aside>
+      <div className="main">
+        <div className="grid-main d-grid">{store.LIST && store.LIST.map((i, key) => <Card item={i} key={key} />)}</div>
+        <button
+          disabled={page === 1}
+          onClick={() =>
+            history.push({
+              pathname: `/${type}/${category}`,
+              search: `?page=${parseInt(page) - 1}`,
+            })
+          }
+        >
+          Previous page
+        </button>
+        {console.log(page, pagination.pageCount)}
+        <button
+          disabled={parseInt(page) >= parseInt(pagination.pageCount)}
+          onClick={() =>
+            history.push({
+              pathname: `/${type}/${category}`,
+              search: `?page=${parseInt(page) + 1}`,
+            })
+          }
+        >
+          Next page
+        </button>
+      </div>
     </div>
   );
 };

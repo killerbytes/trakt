@@ -23,3 +23,76 @@ body {
     width: 1160px;
   }
 }
+
+.movie-list {
+  aside {
+    background-color: #1d1d1d;
+    min-width: 300px;
+    padding: 1rem;
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    a {
+      color: $text-color;
+      font-size: 22px;
+    }
+    a.active {
+      color: $primary;
+    }
+  }
+
+  .main {
+    flex: 1;
+    .grid-main {
+      display: grid;
+
+      @media (min-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      @media (min-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      @media (min-width: 1200px) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  }
+}
+
+.card {
+  position: relative;
+  a {
+    color: #fff;
+    display: block;
+    position: relative;
+  }
+  .title {
+    padding: 0.5rem;
+    font-size: 18px;
+    position: absolute;
+    bottom: 0;
+    text-shadow: 0 0 20px #000;
+    .watchers {
+      display: inline-block;
+      font-size: 11px;
+      padding: 0.1rem 0.2rem;
+      background-color: $primary;
+    }
+    small {
+      margin-left: 0.3rem;
+      color: $text-color-gray;
+    }
+  }
+  .actions {
+    padding: 0.5rem;
+    i {
+      margin-right: 1rem;
+    }
+  }
+  img {
+    width: 100%;
+  }
+}

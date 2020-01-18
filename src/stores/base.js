@@ -8,13 +8,16 @@ class BaseStore {
   page = 1;
   people = { cast: [] };
   summary = {};
+  pagination = {};
 
   list = (category, period, page, limit) => {
     return new Promise((resolve, reject) => {
       this.api
         .list(category, period, page, limit)
         .then(({ data, pagination }) => {
-          this.LIST = [...this.LIST, ...data];
+          console.log(data);
+          this.LIST = data;
+          this.pagination = pagination;
           resolve({ content: data, pagination });
         })
         .catch((err) => reject(err));
@@ -51,4 +54,5 @@ export default decorate(BaseStore, {
   page: observable,
   people: observable,
   summary: observable,
+  pagination: observable,
 });

@@ -13,12 +13,16 @@ const Card = ({ match, item, tmdbStore }) => {
   React.useEffect(() => {
     if (data.ids) {
       tmdbStore.getDetails(data.ids.tmdb, key).then((res) => {
-        setPoster(`https://image.tmdb.org/t/p/w780${res.backdrop_path}`);
+        if (res.backdrop_path) {
+          setPoster(`https://image.tmdb.org/t/p/w780${res.backdrop_path || res.poster_path}`);
+        } else {
+          setPoster('https://via.placeholder.com/780x439?text=No Image');
+        }
       });
     }
   }, [data.ids, key, tmdbStore]);
   return (
-    <CardStyled>
+    <div className="card">
       <Link to={`/movies/details/${data.ids.slug}`}>
         <img src={poster} alt="" />
         <div className="title">
@@ -33,7 +37,7 @@ const Card = ({ match, item, tmdbStore }) => {
         <i className="fas fa-check"></i>
         <i className="fas fa-align-left"></i>
       </div>
-    </CardStyled>
+    </div>
   );
 };
 
