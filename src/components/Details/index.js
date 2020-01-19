@@ -1,66 +1,52 @@
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
-import Cast from './Cast';
+import Aside from 'components/common/Details/Aside';
+import Cast from 'components/common/Cast';
+import Cover from 'components/common/Details/Cover';
+import Details from 'components/common/Details';
 import React from 'react';
-import styled from 'styled-components';
 
-const MovieDetails = ({ match, movieStore, tmdbStore }) => {
-  const slug = match.params.slug;
-  const detail = movieStore.summary;
-  const [poster, setPoster] = React.useState({});
+const TypeDetails = ({ match, movieStore, showStore, tmdbStore }) => {
+  const { type, slug } = match.params;
+  const key = type === 'movies' ? 'movie' : 'show';
+  const store = type === 'movies' ? movieStore : showStore;
+  const details = store.summary;
+  const [poster, setPoster] = React.useState({ isLoading: false });
 
-  const people = movieStore.people.cast.slice(0, 10);
+  const people = store.people.cast.slice(0, 10);
   React.useEffect(() => {
-    movieStore.getSummary(slug, { extended: 'full' });
-    movieStore.getPeople(slug);
-  }, [movieStore, slug]);
+    store.getSummary(slug, { extended: 'full' });
+    store.getPeople(slug);
+  }, [store, slug]);
 
   React.useEffect(() => {
-    if (detail.ids) {
-      tmdbStore.getDetails(detail.ids.tmdb).then((res) => {
+    setPoster((prevState) => ({ ...prevState, isLoading: true }));
+    if (details.ids) {
+      tmdbStore.getDetails(details.ids, key).then((res) => {
         setPoster((prevState) => ({
           ...prevState,
-          poster: `https://image.tmdb.org/t/p/w500${res.poster_path}`,
+          isLoading: false,
+          path: `https://image.tmdb.org/t/p/w500${res.poster_path}`,
           cover: `https://image.tmdb.org/t/p/w1280${res.backdrop_path}`,
         }));
       });
     }
-  }, [movieStore.summary, detail.ids, tmdbStore]);
-
+  }, [store.summary, key, details.ids, tmdbStore]);
   return (
-    <DetailsStyled>
-      <CoverStyled bg={poster.cover} className="cover">
-        <div className="stats-overlay">
-          <div className="container">
-            <div className="stats">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. A facilis dolore ad est, autem sint fugit
-              praesentium voluptate et hic repellendus tenetur, architecto earum iure eveniet odit quaerat inventore
-              quibusdam?
-            </div>
-          </div>
-        </div>
-        <div className="container">
-          <div className="meta">
-            <h1>
-              {detail.title} <small>{detail.year}</small>
-            </h1>
-          </div>
-        </div>
-      </CoverStyled>
+    <Details>
+      <Cover details={details} poster={poster} />
       <div className="main container">
-        <aside>
-          <img className="poster" src={poster.poster} alt="" />
-        </aside>
+        <Aside poster={poster} />
         <div className="content">
           <div className="info">
             <ul>
               <li>
                 <label>Released</label>
-                <span>{detail.released}</span>
+                <span>{details.released}</span>
               </li>
               <li>
                 <label>Runtime</label>
-                {detail.runtime} mins
+                {details.runtime} mins
               </li>
               <li>
                 <label>Directors</label>
@@ -93,7 +79,7 @@ const MovieDetails = ({ match, movieStore, tmdbStore }) => {
             </ul>
           </div>
           <div className="overview">
-            <p>{detail.overview}</p>
+            <p>{details.overview}</p>
             <div className="controls">
               <button>Check In</button>
               <button>Add to History</button>
@@ -112,63 +98,8 @@ const MovieDetails = ({ match, movieStore, tmdbStore }) => {
         {/* {JSON.stringify(detail)}
       {JSON.stringify(people)} */}
       </div>
-    </DetailsStyled>
+    </Details>
   );
 };
 
-export default inject('movieStore', 'tmdbStore')(observer(MovieDetails));
-const CoverStyled = styled.div`
-  position: absolute;
-  background-image: url(${(props) => props.bg});
-  height: 550px;
-  width: 100%;
-  background-size: cover;
-  background-position: 50% 10%;
-  top: 0;
-  display: flex;
-  flex-direction: column-reverse;
-  .stats-overlay {
-    background: rgba(0, 0, 0, 0.6);
-    .stats {
-      padding: 1rem;
-      padding-left: 225px;
-      color: #fff;
-    }
-  }
-  .meta {
-    text-shadow: 0 0 20px #000;
-    padding-left: 225px;
-    color: ${(props) => props.theme.textColor};
-  }
-`;
-const DetailsStyled = styled.div`
-  background-color: #fff;
-  .main {
-    display: flex;
-    padding-top: 18rem;
-    position: relative;
-    .content {
-      padding-top: 14rem;
-    }
-  }
-  aside {
-    position: sticky;
-    top: 70px;
-    align-self: flex-start;
-    margin-right: 1.5rem;
-    width: 180px;
-    min-width: 180px;
-    img {
-      width: 100%;
-      border: 3px solid #fff;
-      box-shadow: 0 0 20px 0 #666;
-    }
-  }
-  .overview {
-    display: flex;
-    .controls {
-      margin-left: auto;
-      padding: 1rem;
-    }
-  }
-`;
+export default inject('movieStore', 'showStore', 'tmdbStore')(observer(TypeDetails));

@@ -10,13 +10,12 @@ class BaseStore {
   summary = {};
   pagination = {};
 
-  list = (category, period, page, limit) => {
+  list = (type, category, period, page, limit) => {
     return new Promise((resolve, reject) => {
       this.api
         .list(category, period, page, limit)
         .then(({ data, pagination }) => {
-          console.log(data);
-          this.LIST = data;
+          this.LIST = category === 'popular' ? data.map((i) => ({ [type === 'movies' ? 'movie' : 'show']: i })) : data;
           this.pagination = pagination;
           resolve({ content: data, pagination });
         })
@@ -26,6 +25,7 @@ class BaseStore {
 
   getSummary = (id, payload) => {
     return new Promise((resolve, reject) => {
+      this.summary = {};
       this.api
         .get(id, payload)
         .then((res) => {

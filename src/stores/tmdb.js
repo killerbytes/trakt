@@ -6,11 +6,12 @@ class TMDBStore extends BaseStore {
     this.api = props.api;
   }
 
-  getDetails = (id, type) => {
+  getDetails = (ids, type) => {
     return new Promise((resolve) => {
-      this.api.getDetails(id, type).then((res) => {
+      this.api.getDetails(ids.tmdb, type).then((res) => {
         resolve(res.data);
       });
+      // .catch((err) => console.log(toJS(ids), type, err));
     });
   };
 }

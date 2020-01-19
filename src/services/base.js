@@ -7,11 +7,11 @@ class BaseServices {
 
   getByType = (id, type, payload) => this.http.get(`${this.url}/${id}/${type}`, { params: payload });
 
-  list = (type, period, page = 1, limit = 38) => {
+  list = (type, period, page = 1, limit = 20) => {
     const params = period ? `${type}/${period}` : `${type}`;
     return this.http.get(`${this.url}/${params}`, {
       params: {
-        // extended: 'full',
+        extended: 'full',
         page,
         limit,
       },

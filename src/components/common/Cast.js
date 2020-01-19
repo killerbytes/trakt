@@ -9,20 +9,21 @@ const Cast = ({ item, tmdbStore }) => {
   const [loading, setLoading] = React.useState(false);
   React.useEffect(() => {
     setLoading(true);
-    tmdbStore.getDetails(item.person.ids.tmdb, 'person').then((res) => {
+    tmdbStore.getDetails(item.person.ids, 'person').then((res) => {
       setImage(`https://image.tmdb.org/t/p/w185${res.profile_path}`);
       setLoading(false);
     });
-  }, [item.person.ids.tmdb, tmdbStore]);
+  }, [item.person.ids, tmdbStore]);
+
   return (
-    <CastStyled>
+    <div className="cast">
       <Link to={`/people/${item.person.ids.slug}`}>
         <div className="poster">{loading ? <Loading /> : <img src={image} alt="" />}</div>
         {item.person.name}
         <div>{item.character}</div>
       </Link>
       {/* {JSON.stringify(item)} */}
-    </CastStyled>
+    </div>
   );
 };
 
