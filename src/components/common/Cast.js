@@ -24,14 +24,11 @@ const Cast = ({ item, tmdbStore }) => {
   }, [item.person.ids, tmdbStore]);
 
   return (
-    <div className="cast">
-      <Link to={`/people/${item.person.ids.slug}`}>
-        <div className="poster">{loading ? <Loading /> : <img src={image} alt="" />}</div>
-        {item.person.name}
-        <div>{item.character}</div>
-      </Link>
-      {/* {JSON.stringify(item)} */}
-    </div>
+    <Link to={`/people/${item.person.ids.slug}`}>
+      <div className="poster">{loading ? <Loading /> : <img src={image} alt="" />}</div>
+      <div className="name">{item.person.name}</div>
+      {item.character}
+    </Link>
   );
 };
 

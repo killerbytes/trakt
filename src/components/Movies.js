@@ -21,8 +21,8 @@ const Movies = (props) => {
   }, [category, movieStore, page, type]);
 
   return (
-    <div className="d-flex h-100 movie-list">
-      <aside>
+    <div className="d-sm-flex h-100 movie-list">
+      <aside className="col text-white">
         <h1>Movies</h1>
         <p>There are 1,464 people watching 774 movies right now!</p>
         <CategoryLinks type={type} />

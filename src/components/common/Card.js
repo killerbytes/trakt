@@ -4,6 +4,7 @@ import { inject } from 'mobx-react';
 import { Link, withRouter } from 'react-router-dom';
 import Loading from 'components/common/Loading';
 import React from 'react';
+import styled from 'styled-components';
 
 const Card = ({ category, item, tmdbStore, isPoster = true }) => {
   const data = item[category] ? item[category] : item;
@@ -37,7 +38,7 @@ const Card = ({ category, item, tmdbStore, isPoster = true }) => {
   }, [data.ids, category, isPoster, tmdbStore]);
 
   return (
-    <div className="card">
+    <CardSyled className="card">
       <Link to={`/${category === 'movie' ? 'movies' : 'shows'}/details/${data.ids.slug}`}>
         {poster.isLoading ? <Loading /> : <img src={poster.path} alt="" />}
         <div className="title">
@@ -58,8 +59,16 @@ const Card = ({ category, item, tmdbStore, isPoster = true }) => {
           <i className="fas fa-heart"></i> {`${data.rating.toFixed(1) * 10}%`}
         </span>
       </div>
-    </div>
+    </CardSyled>
   );
 };
 
 export default withRouter(inject('tmdbStore')(Card));
+
+const CardSyled = styled.div`
+  border: 0;
+  border-radius: 0;
+  img {
+    width: 100%;
+  }
+`;

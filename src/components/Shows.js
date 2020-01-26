@@ -21,8 +21,8 @@ const Shows = (props) => {
   }, [category, showStore, page, type]);
 
   return (
-    <div className="d-flex h-100 movie-list">
-      <aside>
+    <div className="d-sm-flex h-100">
+      <aside className="col text-white">
         <h1>TV Shows</h1>
         <p>The most popular shows for all time.</p>
         <CategoryLinks type={type} />

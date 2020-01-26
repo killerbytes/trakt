@@ -8,9 +8,9 @@ const Details = ({ children }) => {
 export default Details;
 
 const DetailsStyled = styled.div`
-  background-color: #fff;
-  color: ${(props) => props.theme.textColorGray};
-  .main {
+  background-color: ${(props) => props.theme.white};
+
+  /* .main {
     display: flex;
     padding-top: 18rem;
     position: relative;
@@ -18,24 +18,28 @@ const DetailsStyled = styled.div`
       padding-top: 14rem;
     }
   }
-  aside {
-    position: sticky;
-    top: 70px;
-    align-self: flex-start;
-    margin-right: 1.5rem;
-    width: 180px;
-    min-width: 180px;
-    img {
-      width: 100%;
-      border: 3px solid #fff;
-      box-shadow: 0 0 20px 0 #666;
-    }
-  }
   .overview {
     display: flex;
     .controls {
       margin-left: auto;
       padding: 1rem;
+    }
+  } */
+
+  @media (min-width: 576px) {
+    aside {
+      position: sticky;
+      top: 70px;
+      align-self: flex-start;
+      margin-right: 1.5rem;
+      width: 180px;
+      min-width: 180px;
+      img {
+        width: 100%;
+        height: auto;
+        border: 3px solid #fff;
+        box-shadow: 0 0 20px 0 #666;
+      }
     }
   }
 `;
