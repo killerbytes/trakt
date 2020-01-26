@@ -1,6 +1,5 @@
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
-// import CategoryLinks from './CategoryLinks';
 import { withRouter } from 'react-router-dom';
 import Card from 'components/common/Card';
 import React from 'react';
@@ -11,7 +10,7 @@ const Movies = ({ store, category, type, page, history }) => {
       <div className="main">
         <div className="grid-main d-grid">
           {store.LIST.map((i, key) => (
-            <Card category={i.movie ? 'movie' : 'show'} item={i} key={key} />
+            <Card isPoster={false} category={i.movie ? 'movie' : 'show'} item={i} key={key} />
           ))}
         </div>
         <button

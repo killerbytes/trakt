@@ -1,18 +1,26 @@
+import { getImage } from 'utils/image';
+import { IMAGE } from 'definitions';
 import { inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import Loading from 'components/common/Loading';
 import React from 'react';
-import styled from 'styled-components';
 
 const Cast = ({ item, tmdbStore }) => {
   const [image, setImage] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const isMounted = React.useRef();
   React.useEffect(() => {
+    isMounted.current = true;
     setLoading(true);
     tmdbStore.getDetails(item.person.ids, 'person').then((res) => {
-      setImage(`https://image.tmdb.org/t/p/w185${res.profile_path}`);
-      setLoading(false);
+      if (isMounted.current) {
+        setImage(getImage(IMAGE.SIZE.PORTRAIT, res.profile_path));
+        setLoading(false);
+      }
     });
+    return () => {
+      isMounted.current = false;
+    };
   }, [item.person.ids, tmdbStore]);
 
   return (
@@ -28,17 +36,3 @@ const Cast = ({ item, tmdbStore }) => {
 };
 
 export default inject('tmdbStore')(Cast);
-
-const CastStyled = styled.li`
-  .poster {
-    display: flex;
-    width: 84px;
-    min-height: 125px;
-    img {
-      width: 100%;
-    }
-  }
-  a {
-    color: ${(props) => props.theme.textColorGray};
-  }
-`;

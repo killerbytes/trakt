@@ -9,6 +9,7 @@ class BaseStore {
   people = { cast: [] };
   summary = {};
   pagination = {};
+  isLoading = false;
 
   list = (type, category, period, page, limit) => {
     return new Promise((resolve, reject) => {
@@ -25,6 +26,7 @@ class BaseStore {
 
   getSummary = (id, payload) => {
     return new Promise((resolve, reject) => {
+      this.isLoading = true;
       this.summary = {};
       this.api
         .get(id, payload)
@@ -32,12 +34,15 @@ class BaseStore {
           this.summary = res.data;
           resolve(res);
         })
-        .catch((err) => reject(err));
+        .catch((err) => reject(err))
+        .finally(() => (this.isLoading = false));
     });
   };
 
   getPeople = (id, payload) => {
     return new Promise((resolve, reject) => {
+      this.people = { cast: [] };
+
       this.api
         .getByType(id, 'people', payload)
         .then((res) => {
@@ -55,4 +60,5 @@ export default decorate(BaseStore, {
   people: observable,
   summary: observable,
   pagination: observable,
+  isLoading: observable,
 });

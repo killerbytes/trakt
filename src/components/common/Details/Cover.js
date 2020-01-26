@@ -1,32 +1,39 @@
+import Loading from '../Loading';
 import React from 'react';
 import styled from 'styled-components';
 
 const Cover = ({ details, poster }) => {
   return (
-    <CoverStyled bg={poster.cover} className="cover">
-      <div className="stats-overlay">
-        <div className="container">
-          <div className="stats">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. A facilis dolore ad est, autem sint fugit
-            praesentium voluptate et hic repellendus tenetur, architecto earum iure eveniet odit quaerat inventore
-            quibusdam?
+    <CoverStyled bg={poster.isLoading ? '' : poster.cover} className="cover">
+      {poster.isLoading ? (
+        <Loading />
+      ) : (
+        <React.Fragment>
+          <div className="stats-overlay">
+            <div className="container">
+              <div className="stats">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. A facilis dolore ad est, autem sint fugit
+                praesentium voluptate et hic repellendus tenetur, architecto earum iure eveniet odit quaerat inventore
+                quibusdam?
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="container">
-        <div className="meta">
-          <h1>
-            {details.title} <small>{details.year}</small>
-          </h1>
-        </div>
-      </div>
+          <div className="container">
+            <div className="meta">
+              <h1>
+                {details.title} <small>{details.year}</small>
+              </h1>
+            </div>
+          </div>
+        </React.Fragment>
+      )}
     </CoverStyled>
   );
 };
 
 const CoverStyled = styled.div`
   position: absolute;
-  background-image: url(${(props) => props.bg});
+  background-image: url('${(props) => props.bg}');
   height: 550px;
   width: 100%;
   background-size: cover;

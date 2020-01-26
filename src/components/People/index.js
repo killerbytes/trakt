@@ -1,3 +1,5 @@
+import { getImage } from 'utils/image';
+import { IMAGE } from 'definitions';
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
 import Aside from 'components/common/Details/Aside';
@@ -13,8 +15,18 @@ const PeopleSummary = ({ match, peopleStore, tmdbStore }) => {
 
   React.useEffect(() => {
     peopleStore.get(slug, { extended: 'full' });
-    peopleStore.getCredits(slug, 'movies', { extended: 'full' });
-  }, [peopleStore, slug]);
+    peopleStore.getCredits(slug, 'movies', { extended: 'full' }).then((res) => {
+      const randomId = Math.floor(Math.random() * Math.floor(res.length));
+      const type = res[randomId].movie ? res[randomId].movie : res[randomId].show;
+      tmdbStore.getDetails(type.ids).then((res) => {
+        setPoster((prevState) => ({
+          ...prevState,
+          isLoading: false,
+          cover: getImage(IMAGE.SIZE.FULL, res.backdrop_path),
+        }));
+      });
+    });
+  }, [peopleStore, tmdbStore, slug]);
 
   React.useEffect(() => {
     setPoster((prevState) => ({ ...prevState, isLoading: true }));
@@ -23,8 +35,7 @@ const PeopleSummary = ({ match, peopleStore, tmdbStore }) => {
         setPoster((prevState) => ({
           ...prevState,
           isLoading: false,
-          path: `https://image.tmdb.org/t/p/w500${res.profile_path}`,
-          // cover: `https://image.tmdb.org/t/p/w1280${res.profile_path}`,
+          path: getImage(IMAGE.SIZE.PORTRAIT, res.profile_path),
         }));
       });
     }

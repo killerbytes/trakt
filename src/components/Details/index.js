@@ -1,3 +1,5 @@
+import { getImage } from 'utils/image';
+import { IMAGE } from 'definitions';
 import { inject } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
 import Aside from 'components/common/Details/Aside';
@@ -11,7 +13,7 @@ const TypeDetails = ({ match, movieStore, showStore, tmdbStore }) => {
   const key = type === 'movies' ? 'movie' : 'show';
   const store = type === 'movies' ? movieStore : showStore;
   const details = store.summary;
-  const [poster, setPoster] = React.useState({ isLoading: false });
+  const [poster, setPoster] = React.useState({ isLoading: true });
 
   const people = store.people.cast.slice(0, 10);
   React.useEffect(() => {
@@ -20,18 +22,27 @@ const TypeDetails = ({ match, movieStore, showStore, tmdbStore }) => {
   }, [store, slug]);
 
   React.useEffect(() => {
-    setPoster((prevState) => ({ ...prevState, isLoading: true }));
-    if (details.ids) {
-      tmdbStore.getDetails(details.ids, key).then((res) => {
-        setPoster((prevState) => ({
-          ...prevState,
-          isLoading: false,
-          path: `https://image.tmdb.org/t/p/w500${res.poster_path}`,
-          cover: `https://image.tmdb.org/t/p/w1280${res.backdrop_path}`,
-        }));
-      });
+    setPoster({ isLoading: true });
+    if (store.summary.ids) {
+      tmdbStore
+        .getDetails(store.summary.ids, key)
+        .then((res) => {
+          setPoster({
+            isLoading: false,
+            path: getImage(IMAGE.SIZE.PORTRAIT, res.poster_path),
+            cover: getImage(IMAGE.SIZE.FULL, res.backdrop_path),
+          });
+        })
+        .catch((err) => {
+          setPoster({
+            isLoading: false,
+            path: err.poster_path,
+            cover: err.backdrop_path,
+          });
+        });
     }
-  }, [store.summary, key, details.ids, tmdbStore]);
+  }, [store.summary, tmdbStore, key]);
+
   return (
     <Details>
       <Cover details={details} poster={poster} />

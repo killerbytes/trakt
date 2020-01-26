@@ -1,4 +1,4 @@
-import { decorate, observable, toJS } from 'mobx';
+import { decorate, observable } from 'mobx';
 
 class PeopleStore {
   constructor(props) {
@@ -9,7 +9,7 @@ class PeopleStore {
 
   get = (id, payload) => {
     this.summary = {};
-    console.log(toJS(this.summary));
+    this.credits = [];
     return new Promise((resolve, reject) => {
       this.api.get(id, payload).then((res) => {
         this.summary = res.data;
